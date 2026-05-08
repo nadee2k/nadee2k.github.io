@@ -1,0 +1,734 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects | Nadee — Data Science Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #F8F9FB;
+    --white:    #FFFFFF;
+    --navy:     #0F172A;
+    --blue:     #2563EB;
+    --blue-lt:  #EFF6FF;
+    --blue-md:  #BFDBFE;
+    --slate:    #475569;
+    --muted:    #94A3B8;
+    --border:   #E2E8F0;
+    --border2:  #CBD5E1;
+    --green:    #16A34A;
+    --green-lt: #F0FDF4;
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
+    --shadow-md: 0 4px 16px rgba(15,23,42,0.08);
+    --shadow-lg: 0 12px 40px rgba(15,23,42,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--navy);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+  @media(max-width:768px){ .container{ padding: 0 20px; } }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    display: flex; align-items: center;
+    justify-content: space-between; height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--navy); text-decoration: none;
+  }
+  .nav-logo span { color: var(--blue); }
+  .nav-links { display: flex; gap: 8px; list-style: none; }
+  .nav-links a {
+    font-size: 14px; font-weight: 500;
+    color: var(--slate); text-decoration: none;
+    padding: 6px 14px; border-radius: 6px;
+    transition: background .2s, color .2s;
+  }
+  .nav-links a:hover { background: var(--bg); color: var(--navy); }
+  .nav-links a.active { color: var(--blue); background: var(--blue-lt); }
+  .nav-cta {
+    background: var(--blue); color: #fff !important;
+    border-radius: 8px; padding: 8px 18px !important;
+    font-weight: 600 !important; font-size: 13px !important;
+  }
+  .nav-cta:hover { background: #1d4ed8 !important; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 0 56px;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); margin-bottom: 20px;
+  }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--blue); }
+  .breadcrumb-sep { color: var(--border2); }
+  .breadcrumb .current { color: var(--navy); font-weight: 500; }
+
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 5vw, 60px);
+    font-weight: 700; color: var(--navy);
+    line-height: 1.1; margin-bottom: 14px;
+  }
+  .page-header h1 em { font-style: italic; color: var(--blue); }
+  .page-header p { font-size: 16px; color: var(--slate); max-width: 560px; line-height: 1.75; }
+
+  /* filter bar */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 36px;
+  }
+  .filter-btn {
+    font-size: 13px; font-weight: 500;
+    padding: 7px 18px; border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: transparent; color: var(--slate);
+    cursor: pointer; transition: all .2s;
+    font-family: 'Outfit', sans-serif;
+  }
+  .filter-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-lt); }
+  .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* ── PROJECTS GRID ── */
+  .projects-section { padding: 64px 0 96px; }
+
+  .projects-count {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 32px; font-weight: 500;
+  }
+  .projects-count strong { color: var(--navy); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  /* card */
+  .project-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all .25s;
+    box-shadow: var(--shadow-sm);
+  }
+  .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--blue-md); }
+
+  /* card accent bar */
+  .card-accent {
+    height: 4px;
+    background: linear-gradient(90deg, var(--blue), #7c3aed);
+  }
+  .card-accent.green  { background: linear-gradient(90deg, #16A34A, #0891B2); }
+  .card-accent.orange { background: linear-gradient(90deg, #EA580C, #D97706); }
+  .card-accent.purple { background: linear-gradient(90deg, #7c3aed, #DB2777); }
+  .card-accent.teal   { background: linear-gradient(90deg, #0891B2, #2563EB); }
+
+  .card-body { padding: 28px 28px 24px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .card-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--blue-lt); display: flex;
+    align-items: center; justify-content: center; font-size: 22px;
+    flex-shrink: 0;
+  }
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+  .badge {
+    font-size: 11px; font-weight: 600; letter-spacing: .3px;
+    padding: 3px 10px; border-radius: 4px;
+  }
+  .badge-blue   { background: var(--blue-lt);  color: var(--blue); }
+  .badge-green  { background: var(--green-lt); color: var(--green); }
+  .badge-slate  { background: #F1F5F9;         color: var(--slate); }
+  .badge-orange { background: #FFF7ED;         color: #C2410C; }
+  .badge-purple { background: #FAF5FF;         color: #7c3aed; }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px; font-weight: 700;
+    color: var(--navy); line-height: 1.25;
+  }
+  .card-desc {
+    font-size: 14px; color: var(--slate);
+    line-height: 1.78; flex: 1;
+  }
+
+  /* highlights */
+  .card-highlights { display: flex; flex-direction: column; gap: 6px; }
+  .highlight {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; color: var(--slate); line-height: 1.5;
+  }
+  .highlight::before {
+    content: '▸';
+    color: var(--blue); font-size: 11px;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .highlight strong { color: var(--navy); }
+
+  .card-tech { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; }
+  .tech-pill {
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px; border-radius: 5px;
+    background: var(--bg); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .card-footer {
+    display: flex; gap: 10px;
+    padding: 16px 28px;
+    border-top: 1px solid var(--border);
+    background: #FCFDFE;
+  }
+  .card-link {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: var(--slate);
+    text-decoration: none; padding: 7px 16px;
+    border: 1.5px solid var(--border); border-radius: 7px;
+    transition: all .2s;
+  }
+  .card-link:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-lt); }
+  .card-link.primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .card-link.primary:hover { background: var(--blue); border-color: var(--blue); }
+  .card-link svg { width: 13px; height: 13px; }
+
+  /* featured card — full width */
+  .project-card.full-width { grid-column: span 2; }
+  .featured-inner {
+    display: grid; grid-template-columns: 1fr 380px;
+    gap: 0; align-items: stretch;
+  }
+  .featured-visual {
+    background: linear-gradient(135deg, #0F172A 0%, #1e3a5f 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px; position: relative; overflow: hidden;
+  }
+  .featured-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .visual-chart {
+    width: 100%; max-width: 300px;
+    position: relative; z-index: 1;
+  }
+  .chart-bar-group { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-bottom: 8px; }
+  .chart-bar {
+    flex: 1; border-radius: 4px 4px 0 0;
+    background: linear-gradient(to top, #2563EB, #60a5fa);
+    opacity: .85;
+    transition: opacity .3s;
+  }
+  .chart-bar.hi { background: linear-gradient(to top, #16A34A, #4ade80); opacity: 1; }
+  .chart-labels { display: flex; gap: 10px; }
+  .chart-labels span { flex: 1; text-align: center; font-size: 10px; color: rgba(255,255,255,.4); }
+  .chart-metric {
+    margin-top: 20px; text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 700; color: #fff;
+    line-height: 1;
+  }
+  .chart-metric small { font-size: 14px; color: rgba(255,255,255,.5); font-family: 'Outfit', sans-serif; display: block; margin-top: 4px; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: var(--navy); padding: 48px 0;
+    margin-top: 0;
+  }
+  .stats-inner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; text-align: center;
+  }
+  .stat-item {
+    padding: 0 32px;
+    border-right: 1px solid rgba(255,255,255,.08);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px; font-weight: 700; color: #fff;
+    line-height: 1;
+  }
+  .stat-num sup { font-size: 22px; color: #93C5FD; }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 6px; font-weight: 500; letter-spacing: .5px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,.5); padding: 32px 0;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between;
+    align-items: center; font-size: 13px;
+  }
+  .footer-inner a { color: rgba(255,255,255,.5); text-decoration: none; }
+  .footer-inner a:hover { color: #fff; }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 700; color: #fff;
+  }
+  .footer-logo span { color: #93C5FD; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* responsive */
+  @media(max-width: 900px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.full-width { grid-column: span 1; }
+    .featured-inner { grid-template-columns: 1fr; }
+    .featured-visual { display: none; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .stat-item { border-right: none; }
+    .nav-links li:not(:last-child) { display: none; }
+    .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Nadee<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="projects.html" class="active">Projects</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Hire Me</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-num">8<sup>+</sup></div>
+        <div class="stat-label">Projects Built</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Domains Covered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">12<sup>+</sup></div>
+        <div class="stat-label">Technologies Used</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Live Deployments</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="current">Projects</span>
+    </div>
+    <h1>My <em>Projects</em></h1>
+    <p>A full collection of data science, machine learning, and analytics projects — from academic coursework to personal experiments.</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterProjects('all', this)">All Projects</button>
+      <button class="filter-btn" onclick="filterProjects('ml', this)">Machine Learning</button>
+      <button class="filter-btn" onclick="filterProjects('nlp', this)">NLP</button>
+      <button class="filter-btn" onclick="filterProjects('viz', this)">Visualization</button>
+      <button class="filter-btn" onclick="filterProjects('dl', this)">Deep Learning</button>
+      <button class="filter-btn" onclick="filterProjects('analysis', this)">Data Analysis</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="projects-section">
+  <div class="container">
+    <p class="projects-count reveal">Showing <strong id="count">8</strong> projects</p>
+
+    <div class="projects-grid" id="grid">
+
+      <!-- 01 Featured -->
+      <div class="project-card full-width reveal" data-tags="ml">
+        <div class="card-accent"></div>
+        <div class="featured-inner">
+          <div class="card-body">
+            <div class="card-top">
+              <div class="card-icon">📉</div>
+              <div class="card-badges">
+                <span class="badge badge-orange">Featured</span>
+                <span class="badge badge-blue">Machine Learning</span>
+              </div>
+            </div>
+            <div class="card-title">Customer Churn Prediction System</div>
+            <div class="card-desc">An end-to-end machine learning pipeline that predicts telecom customer churn. Covers the full ML workflow: EDA, feature engineering, class imbalance handling, model selection, hyperparameter tuning, and a live interactive Streamlit dashboard.</div>
+            <div class="card-highlights">
+              <div class="highlight"><strong>91% accuracy</strong>, 0.87 AUC-ROC on held-out test data</div>
+              <div class="highlight">Compared Random Forest, XGBoost, LightGBM with cross-validation</div>
+              <div class="highlight">SHAP explainability for feature importance visualisation</div>
+              <div class="highlight">Deployed as a <strong>live Streamlit app</strong> for real-time scoring</div>
+            </div>
+            <div class="card-tech">
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">XGBoost</span>
+              <span class="tech-pill">Scikit-learn</span>
+              <span class="tech-pill">SHAP</span>
+              <span class="tech-pill">Streamlit</span>
+              <span class="tech-pill">Pandas</span>
+              <span class="tech-pill">Matplotlib</span>
+            </div>
+          </div>
+          <div class="featured-visual">
+            <div class="visual-chart">
+              <div class="chart-bar-group">
+                <div class="chart-bar" style="height:55%"></div>
+                <div class="chart-bar" style="height:70%"></div>
+                <div class="chart-bar" style="height:82%"></div>
+                <div class="chart-bar hi" style="height:91%"></div>
+                <div class="chart-bar" style="height:78%"></div>
+                <div class="chart-bar" style="height:65%"></div>
+              </div>
+              <div class="chart-labels">
+                <span>LR</span><span>DT</span><span>RF</span><span>XGB</span><span>LGBM</span><span>SVM</span>
+              </div>
+              <div class="chart-metric">91%<small>Best Model Accuracy</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            View on GitHub
+          </a>
+          <a href="#" class="card-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Demo
+          </a>
+          <a href="#" class="card-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Notebook
+          </a>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="project-card reveal" data-tags="nlp">
+        <div class="card-accent purple"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">💬</div>
+            <div class="card-badges">
+              <span class="badge badge-purple">NLP</span>
+              <span class="badge badge-blue">Deep Learning</span>
+            </div>
+          </div>
+          <div class="card-title">Multilingual Sentiment Analysis — Sri Lankan Twitter</div>
+          <div class="card-desc">Collected and analysed 50K+ tweets related to local political events. Fine-tuned a multilingual BERT model to handle Sinhala-English code-switching, a unique challenge in South Asian social media.</div>
+          <div class="card-highlights">
+            <div class="highlight">Multi-class sentiment (positive / negative / neutral)</div>
+            <div class="highlight"><strong>83% F1-score</strong> on test set with multilingual BERT</div>
+            <div class="highlight">Interactive Plotly time-series dashboard of sentiment trends</div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">HuggingFace</span>
+            <span class="tech-pill">BERT</span>
+            <span class="tech-pill">Tweepy</span>
+            <span class="tech-pill">Plotly</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="card-link">Report</a>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="project-card reveal" data-tags="dl">
+        <div class="card-accent green"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">🌿</div>
+            <div class="card-badges">
+              <span class="badge badge-green">Deep Learning</span>
+              <span class="badge badge-slate">Computer Vision</span>
+            </div>
+          </div>
+          <div class="card-title">Plant Disease Detection with CNN</div>
+          <div class="card-desc">Convolutional neural network trained on 54K+ plant leaf images to identify 38 disease categories. Applied transfer learning with a ResNet-50 backbone and deployed as a real-time Streamlit web application.</div>
+          <div class="card-highlights">
+            <div class="highlight"><strong>96% test accuracy</strong> on held-out validation set</div>
+            <div class="highlight">ResNet-50 transfer learning with custom classification head</div>
+            <div class="highlight">Real-time prediction via <strong>Streamlit web app</strong></div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">TensorFlow</span>
+            <span class="tech-pill">Keras</span>
+            <span class="tech-pill">ResNet-50</span>
+            <span class="tech-pill">OpenCV</span>
+            <span class="tech-pill">Streamlit</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="card-link">Live App</a>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="project-card reveal" data-tags="viz analysis">
+        <div class="card-accent teal"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">🗺️</div>
+            <div class="card-badges">
+              <span class="badge badge-blue">Visualization</span>
+              <span class="badge badge-slate">Forecasting</span>
+            </div>
+          </div>
+          <div class="card-title">COVID-19 Interactive Dashboard — Sri Lanka</div>
+          <div class="card-desc">Provincial-level interactive dashboard tracking COVID-19 cases, vaccination rates, and mobility data. Integrates time-series forecasting using Facebook Prophet for 7-day case projections.</div>
+          <div class="card-highlights">
+            <div class="highlight">Province-level choropleth map with drill-down views</div>
+            <div class="highlight"><strong>7-day forecasting</strong> with confidence intervals via Prophet</div>
+            <div class="highlight">Auto-refreshing from live government API data</div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">Dash</span>
+            <span class="tech-pill">Plotly</span>
+            <span class="tech-pill">Prophet</span>
+            <span class="tech-pill">GeoPandas</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="card-link">Dashboard</a>
+        </div>
+      </div>
+
+      <!-- 05 -->
+      <div class="project-card reveal" data-tags="ml analysis">
+        <div class="card-accent orange"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">🌾</div>
+            <div class="card-badges">
+              <span class="badge badge-orange">ML · Hackathon</span>
+            </div>
+          </div>
+          <div class="card-title">Agricultural Yield Forecasting</div>
+          <div class="card-desc">Built for DataThon SL 2023. Predicts crop yield across Sri Lankan districts using historical climate, rainfall, and soil quality data. Achieved Top 10 placement out of 60+ teams.</div>
+          <div class="card-highlights">
+            <div class="highlight"><strong>Top 10 / 60+ teams</strong> at DataThon SL 2023</div>
+            <div class="highlight">Ensemble model: XGBoost + Ridge Regression stacking</div>
+            <div class="highlight">89% accuracy on district-level yield predictions</div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">XGBoost</span>
+            <span class="tech-pill">Scikit-learn</span>
+            <span class="tech-pill">Matplotlib</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- 06 -->
+      <div class="project-card reveal" data-tags="analysis viz">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">🎓</div>
+            <div class="card-badges">
+              <span class="badge badge-blue">Data Analysis</span>
+              <span class="badge badge-slate">Research</span>
+            </div>
+          </div>
+          <div class="card-title">Student Outcome Prediction — Research Project</div>
+          <div class="card-desc">Academic research project at the university AI lab predicting student academic performance using demographic, engagement, and assessment data. Results contributed to a published regional paper.</div>
+          <div class="card-highlights">
+            <div class="highlight">Dataset of 3,200+ student records across 4 semesters</div>
+            <div class="highlight">Logistic Regression, Decision Tree, and Random Forest comparison</div>
+            <div class="highlight">Findings published in a <strong>regional academic journal</strong></div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">Scikit-learn</span>
+            <span class="tech-pill">Seaborn</span>
+            <span class="tech-pill">Pandas</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="card-link">Paper</a>
+        </div>
+      </div>
+
+      <!-- 07 -->
+      <div class="project-card reveal" data-tags="nlp analysis">
+        <div class="card-accent purple"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">📰</div>
+            <div class="card-badges">
+              <span class="badge badge-purple">NLP</span>
+            </div>
+          </div>
+          <div class="card-title">News Article Topic Modelling</div>
+          <div class="card-desc">Applied LDA and BERTopic to a corpus of 20K+ Sri Lankan English-language news articles to discover latent topic clusters. Produced an interactive topic exploration dashboard.</div>
+          <div class="card-highlights">
+            <div class="highlight">20,000+ articles scraped and preprocessed</div>
+            <div class="highlight">LDA vs BERTopic comparison with coherence evaluation</div>
+            <div class="highlight">Interactive pyLDAvis exploration dashboard</div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">BERTopic</span>
+            <span class="tech-pill">Gensim</span>
+            <span class="tech-pill">NLTK</span>
+            <span class="tech-pill">pyLDAvis</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="card-link">Notebook</a>
+        </div>
+      </div>
+
+      <!-- 08 -->
+      <div class="project-card reveal" data-tags="analysis viz">
+        <div class="card-accent teal"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">💹</div>
+            <div class="card-badges">
+              <span class="badge badge-blue">Data Analysis</span>
+              <span class="badge badge-slate">Finance</span>
+            </div>
+          </div>
+          <div class="card-title">Stock Price EDA & Technical Analysis</div>
+          <div class="card-desc">Comprehensive exploratory data analysis of Colombo Stock Exchange data. Computed technical indicators (RSI, MACD, Bollinger Bands), correlation matrices, and visualised return distributions with interactive Plotly charts.</div>
+          <div class="card-highlights">
+            <div class="highlight">5+ years of historical CSE data analysed</div>
+            <div class="highlight">10 technical indicators implemented from scratch</div>
+            <div class="highlight">Correlation heatmaps and sector-level trend analysis</div>
+          </div>
+          <div class="card-tech">
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">Pandas</span>
+            <span class="tech-pill">Plotly</span>
+            <span class="tech-pill">NumPy</span>
+            <span class="tech-pill">yfinance</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://github.com/nadee2k" target="_blank" class="card-link primary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="card-link">Notebook</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">Nadee<span>.</span></div>
+      <p>© 2025 · Data Science Portfolio · Sri Lanka 🇱🇰</p>
+      <a href="index.html">← Back to Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Filter
+  function filterProjects(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cards = document.querySelectorAll('.project-card');
+    let count = 0;
+    cards.forEach(card => {
+      const tags = card.dataset.tags || '';
+      const show = tag === 'all' || tags.includes(tag);
+      card.style.display = show ? '' : 'none';
+      if (show) count++;
+    });
+    document.getElementById('count').textContent = count;
+  }
+</script>
+</body>
+</html>

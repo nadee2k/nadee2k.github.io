@@ -1,0 +1,163 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Footer from "../../components/Footer.astro";
+import { trackOrder, tracks, type Track } from "../../data/tracks";
+import { site } from "../../data/site";
+
+const all = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const groups: { track: Track; items: typeof all }[] = [
+  ...trackOrder.map((track) => ({
+    track,
+    items: all.filter((p) => p.data.track === track),
+  })),
+  {
+    track: null as unknown as Track,
+    items: all.filter((p) => !trackOrder.includes(p.data.track)),
+  },
+].filter((g) => g.items.length > 0);
+---
+
+<BaseLayout
+  title="Projects"
+  description={`All ${all.length} projects by ${site.name} — machine learning, data engineering and product work.`}
+>
+  <Nav />
+  <main id="main" class="page">
+    <div class="container">
+      <header class="page__head">
+        <span class="eyebrow">Portfolio</span>
+        <h1 class="section-title">All Projects</h1>
+        <p class="section-lede">
+          {all.length} projects across machine learning, data engineering and product
+          work. Filter by track below.
+        </p>
+
+        <nav class="filter" aria-label="Filter projects by track">
+          <a class="chip" href="#all">All ({all.length})</a>
+          {
+            trackOrder.map((track) => {
+              const count = all.filter((p) => p.data.track === track).length;
+              return count > 0 ? (
+                <a class="chip" href={`#${track}`} style={`color:${tracks[track].color}`}>
+                  {tracks[track].label} ({count})
+                </a>
+              ) : null;
+            })
+          }
+        </nav>
+      </header>
+
+      {
+        groups.map((group) => {
+          const meta = group.track ? tracks[group.track] : null;
+          return (
+            <section
+              class="page__group"
+              id={group.track ?? "other"}
+              style={meta ? `--card-accent:${meta.color}` : undefined}
+            >
+              {meta && (
+                <header class="page__group-head">
+                  <h2 class="page__group-title">
+                    <span
+                      class="page__group-dot"
+                      style={`background:${meta.color}`}
+                      aria-hidden="true"
+                    />
+                    {meta.label}
+                  </h2>
+                  <p class="page__group-blurb">{meta.blurb}</p>
+                </header>
+              )}
+
+              <div class="page__grid">
+                {group.items.map((project) => (
+                  <ProjectCard project={project} />
+                ))}
+              </div>
+            </section>
+          );
+        })
+      }
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: calc(var(--nav-height) + clamp(2.5rem, 6vw, 4rem))
+      var(--section-y);
+  }
+
+  .page__head {
+    max-width: 680px;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .filter a {
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .filter a:hover {
+    border-color: var(--accent-border);
+    text-decoration: none;
+  }
+
+  .page__group {
+    scroll-margin-top: calc(var(--nav-height) + 1rem);
+  }
+
+  .page__group + .page__group {
+    margin-top: clamp(2.75rem, 5vw, 4rem);
+  }
+
+  .page__group-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 0.9rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page__group-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: var(--text-lg);
+    font-weight: 600;
+  }
+
+  .page__group-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+
+  .page__group-blurb {
+    font-size: var(--text-sm);
+    color: var(--text-subtle);
+  }
+
+  .page__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.15rem;
+  }
+</style>

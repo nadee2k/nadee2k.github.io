@@ -1,0 +1,95 @@
+---
+import { skillGroups, interests } from "../data/site";
+import SectionHead from "./SectionHead.astro";
+---
+
+<section class="section section--alt" id="skills">
+  <div class="container">
+    <SectionHead
+      eyebrow="Capabilities"
+      title="Technical Skills"
+      lede="Every tool below is used in at least one project linked from this site."
+    />
+
+    <div class="skills__grid">
+      {
+        skillGroups.map((group) => (
+          <div class="card card--pad skills__group">
+            <h3 class="skills__group-title">{group.title}</h3>
+            <ul class="chip-row">
+              {group.items.map((item) => (
+                <li>
+                  <span class="chip">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="skills__interests">
+      <h3 class="skills__interests-title">What I work on</h3>
+      <ul class="skills__interests-list">
+        {
+          interests.map((interest) => (
+            <li>
+              <span aria-hidden="true">→</span>
+              {interest}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.15rem;
+  }
+
+  .skills__group-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skills__interests {
+    margin-top: 2.5rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-sunken);
+  }
+
+  .skills__interests-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .skills__interests-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.6rem 1.5rem;
+    list-style: none;
+    padding: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .skills__interests-list li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+
+  .skills__interests-list span {
+    color: var(--accent);
+  }
+</style>

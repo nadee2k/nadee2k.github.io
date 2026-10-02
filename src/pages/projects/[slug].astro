@@ -1,0 +1,404 @@
+---
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { tracks } from "../../data/tracks";
+import { site } from "../../data/site";
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id.replace(/\.(md|mdx)$/, "") },
+    props: { project, all: projects },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project, all } = Astro.props;
+const { data } = project;
+const { Content, headings } = await render(project);
+
+const track = tracks[data.track];
+const related = all
+  .filter((p) => p.id !== project.id && p.data.track === data.track)
+  .slice(0, 3);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: data.title,
+  description: data.summary,
+  url: new URL(`/projects/${project.id.replace(/\.(md|mdx)$/, "")}/`, site.url).href,
+  author: { "@type": "Person", name: site.name, url: site.url },
+  keywords: data.stack.join(", "),
+};
+---
+
+<BaseLayout title={data.title} description={data.summary} schema={[schema]}>
+  <Nav />
+  <main id="main">
+    <article class="cs" style={`--card-accent:${track.color}`}>
+      <div class="container">
+        <nav class="cs__crumb" aria-label="Breadcrumb">
+          <a href="/projects">Projects</a>
+          <span aria-hidden="true">/</span>
+          <span>{track.label}</span>
+        </nav>
+
+        <header class="cs__head">
+          <div class="cs__head-main">
+            <span class={`badge ${track.badge}`}>{track.label}</span>
+            <h1 class="cs__title">{data.title}</h1>
+            <p class="cs__summary">{data.summary}</p>
+
+            {
+              (data.period || data.role) && (
+                <ul class="cs__meta">
+                  {data.role && <li>{data.role}</li>}
+                  {data.period && <li>{data.period}</li>}
+                </ul>
+              )
+            }
+          </div>
+
+          <div class="cs__actions">
+            {
+              data.repoUrl && (
+                <a class="btn btn--primary btn--sm" href={data.repoUrl} target="_blank" rel="noopener">
+                  View code
+                </a>
+              )
+            }
+            {
+              data.demoUrl && (
+                <a class="btn btn--ghost btn--sm" href={data.demoUrl} target="_blank" rel="noopener">
+                  Live demo
+                </a>
+              )
+            }
+            <a class="btn btn--quiet btn--sm" href={site.resume} download>
+              Résumé
+            </a>
+          </div>
+        </header>
+
+        {
+          data.metrics.length > 0 && (
+            <ul class="cs__metrics">
+              {data.metrics.map((metric) => (
+                <li class="card cs__metric">
+                  <span class="cs__metric-value">{metric.value}</span>
+                  <span class="cs__metric-label">{metric.label}</span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+
+        <div class="cs__layout">
+          <div class="cs__body">
+            {
+              data.stack.length > 0 && (
+                <section class="cs__block">
+                  <h2 class="cs__block-title">Stack</h2>
+                  <ul class="chip-row">
+                    {data.stack.map((item) => (
+                      <li><span class="chip">{item}</span></li>
+                    ))}
+                  </ul>
+                </section>
+              )
+            }
+
+            {
+              data.problem && (
+                <section class="cs__block">
+                  <h2 class="cs__block-title">Problem</h2>
+                  <p class="cs__block-text">{data.problem.trim()}</p>
+                </section>
+              )
+            }
+
+            {
+              data.solution && (
+                <section class="cs__block">
+                  <h2 class="cs__block-title">Approach</h2>
+                  <p class="cs__block-text">{data.solution.trim()}</p>
+                </section>
+              )
+            }
+
+            {
+              data.highlights.length > 0 && (
+                <section class="cs__block">
+                  <h2 class="cs__block-title">What I built</h2>
+                  <ul class="cs__highlights">
+                    {data.highlights.map((highlight) => (
+                      <li>{highlight}</li>
+                    ))}
+                  </ul>
+                </section>
+              )
+            }
+
+            {data.architecture && (
+              <section class="cs__block">
+                <h2 class="cs__block-title">Architecture</h2>
+                <img
+                  class="cs__diagram"
+                  src={data.architecture}
+                  alt={`${data.title} architecture diagram`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </section>
+            )}
+
+            <div class="prose cs__prose">
+              <Content />
+            </div>
+          </div>
+
+          {
+            headings.length > 1 && (
+              <aside class="cs__toc" aria-label="On this page">
+                <p class="cs__toc-title">On this page</p>
+                <ul>
+                  {headings
+                    .filter((heading) => heading.depth === 2)
+                    .map((heading) => (
+                      <li><a href={`#${heading.slug}`}>{heading.text}</a></li>
+                    ))}
+                </ul>
+              </aside>
+            )
+          }
+        </div>
+
+        {
+          related.length > 0 && (
+            <footer class="cs__related">
+              <h2 class="cs__related-title">More {track.label.toLowerCase()} work</h2>
+              <div class="cs__related-grid">
+                {related.map((item) => (
+                  <ProjectCard project={item} compact />
+                ))}
+              </div>
+            </footer>
+          )
+        }
+      </div>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .cs {
+    padding-block: calc(var(--nav-height) + clamp(2rem, 5vw, 3rem))
+      var(--section-y);
+    border-top: 2px solid var(--card-accent);
+  }
+
+  .cs__crumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-xs);
+    color: var(--text-subtle);
+    font-family: var(--font-mono);
+    margin-bottom: 1.5rem;
+  }
+
+  .cs__crumb a {
+    color: var(--text-muted);
+  }
+
+  .cs__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cs__head-main {
+    max-width: 62ch;
+  }
+
+  .cs__title {
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin-block: 0.75rem 0.85rem;
+    text-wrap: balance;
+  }
+
+  .cs__summary {
+    color: var(--text-muted);
+    font-size: var(--text-lg);
+    line-height: 1.65;
+  }
+
+  .cs__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-subtle);
+  }
+
+  .cs__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .cs__metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.85rem;
+    list-style: none;
+    padding: 1.75rem 0 0;
+  }
+
+  .cs__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 1rem 1.15rem;
+  }
+
+  .cs__metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--card-accent);
+    line-height: 1.15;
+  }
+
+  .cs__metric-label {
+    font-size: var(--text-xs);
+    color: var(--text-subtle);
+  }
+
+  .cs__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+    padding-top: 2.25rem;
+  }
+
+  .cs__block + .cs__block,
+  .cs__prose {
+    margin-top: 2.25rem;
+  }
+
+  .cs__block-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--card-accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .cs__block-text {
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 68ch;
+  }
+
+  .cs__highlights {
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 68ch;
+  }
+
+  .cs__highlights li + li {
+    margin-top: 0.5rem;
+  }
+
+  .cs__diagram {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-sunken);
+  }
+
+  .cs__toc {
+    position: sticky;
+    top: calc(var(--nav-height) + 1.5rem);
+    padding: 1.15rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: var(--text-sm);
+  }
+
+  .cs__toc-title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 0.7rem;
+  }
+
+  .cs__toc ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .cs__toc a {
+    color: var(--text-muted);
+  }
+
+  .cs__toc a:hover {
+    color: var(--card-accent);
+  }
+
+  .cs__related {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .cs__related-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 1.15rem;
+  }
+
+  .cs__related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .cs__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .cs__toc {
+      position: static;
+      order: -1;
+    }
+  }
+</style>

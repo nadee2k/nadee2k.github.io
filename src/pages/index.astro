@@ -1,0 +1,206 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Skills from "../components/Skills.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import SectionHead from "../components/SectionHead.astro";
+import Experience from "../components/Experience.astro";
+import Credentials from "../components/Credentials.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
+import { trackOrder, tracks } from "../data/tracks";
+
+const all = await getCollection("projects");
+const featured = all.filter((p) => p.data.featured).sort((a, b) => a.data.order - b.data.order);
+
+const grouped = trackOrder
+  .map((track) => ({
+    track,
+    meta: tracks[track],
+    items: featured.filter((p) => p.data.track === track),
+  }))
+  .filter((group) => group.items.length > 0);
+
+const secondary = all
+  .filter((p) => !p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: `Featured projects by ${site.name}`,
+  itemListElement: featured.map((project, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: new URL(`/projects/${project.id.replace(/\.(md|mdx)$/, "")}/`, site.url).href,
+    name: project.data.title,
+  })),
+};
+---
+
+<BaseLayout schema={[itemListSchema]}>
+  <Nav />
+  <main id="main">
+    <Hero />
+    <About />
+    <Skills />
+
+    <section class="section" id="projects">
+      <div class="container">
+        <SectionHead
+          eyebrow="Selected Work"
+          title="Featured Projects"
+          lede="Built end to end — problem, pipeline, model, evaluation and deployment. Every project links to the repository it came from."
+        />
+
+        {
+          grouped.map((group) => (
+            <div class="projects__group">
+              <header class="projects__group-head">
+                <h3 class="projects__group-title">
+                  <span
+                    class="projects__group-dot"
+                    style={`background:${group.meta.color}`}
+                    aria-hidden="true"
+                  />
+                  {group.meta.label}
+                </h3>
+                <p class="projects__group-blurb">{group.meta.blurb}</p>
+              </header>
+
+              <div class="projects__grid">
+                {group.items.map((project) => (
+                  <ProjectCard project={project} />
+                ))}
+              </div>
+            </div>
+          ))
+        }
+
+        {
+          secondary.length > 0 && (
+            <aside class="projects__secondary">
+              <h3 class="projects__secondary-title">Also built</h3>
+              <ul class="projects__secondary-list">
+                {secondary.map((project) => (
+                  <li>
+                    <a
+                      href={`/projects/${project.id.replace(/\.(md|mdx)$/, "")}/`}
+                    >
+                      <span class={`badge ${tracks[project.data.track].badge}`}>
+                        {tracks[project.data.track].short}
+                      </span>
+                      <span class="projects__secondary-name">
+                        {project.data.title}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a class="btn btn--quiet btn--sm" href="/projects">
+                View all {all.length} projects →
+              </a>
+            </aside>
+          )
+        }
+      </div>
+    </section>
+
+    <Experience />
+    <Credentials />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .projects__group + .projects__group {
+    margin-top: clamp(2.5rem, 5vw, 3.75rem);
+  }
+
+  .projects__group-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.9rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .projects__group-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: var(--text-base);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .projects__group-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .projects__group-blurb {
+    font-size: var(--text-sm);
+    color: var(--text-subtle);
+  }
+
+  .projects__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.15rem;
+  }
+
+  .projects__secondary {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: clamp(1.35rem, 3vw, 1.85rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+  }
+
+  .projects__secondary-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 1.1rem;
+  }
+
+  .projects__secondary-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.4rem 1.5rem;
+    list-style: none;
+    padding: 0 0 1.35rem;
+    margin-bottom: 1.35rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .projects__secondary-list a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .projects__secondary-list a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .projects__secondary-list a:hover .projects__secondary-name {
+    color: var(--accent);
+  }
+
+  .projects__secondary-name {
+    transition: color var(--dur) var(--ease);
+  }
+</style>

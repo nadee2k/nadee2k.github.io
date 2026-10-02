@@ -1,0 +1,464 @@
+/* ==========================================================================
+   Design tokens — dark only
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --bg: #080c18;
+  --bg-raised: #0f1626;
+  --bg-sunken: #05080f;
+  --surface: #131c2f;
+  --surface-hover: #1a2438;
+  --border: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(148, 163, 184, 0.3);
+
+  /* Text */
+  --text: #e8eefc;
+  --text-muted: #9fb0cc;
+  --text-subtle: #6b7f9e;
+
+  /* Accent */
+  --accent: #38bdf8;
+  --accent-strong: #0ea5e9;
+  --accent-dim: rgba(56, 189, 248, 0.12);
+  --accent-border: rgba(56, 189, 248, 0.35);
+  --accent-text: #bae6fd;
+
+  /* Track accents */
+  --track-ml: #a78bfa;
+  --track-ml-dim: rgba(167, 139, 250, 0.13);
+  --track-data: #38bdf8;
+  --track-data-dim: rgba(56, 189, 248, 0.13);
+  --track-product: #34d399;
+  --track-product-dim: rgba(52, 211, 153, 0.13);
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.78rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.4rem;
+  --text-2xl: 2rem;
+  --text-3xl: clamp(2.2rem, 5vw, 3.4rem);
+
+  /* Space */
+  --gutter: 1.5rem;
+  --section-y: clamp(4.5rem, 9vw, 7.5rem);
+  --container: 1180px;
+
+  /* Radius + shadow */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 0.22s;
+
+  --nav-height: 68px;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Offset anchor targets so the fixed navbar never covers a heading. */
+  scroll-padding-top: calc(var(--nav-height) + 1.5rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  font-size: var(--text-base);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+picture {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul,
+ol {
+  padding-left: 1.25rem;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--alt {
+  background: var(--bg-raised);
+}
+
+.section--sunken {
+  background: var(--bg-sunken);
+}
+
+.section-head {
+  max-width: 720px;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: var(--text-2xl);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.section-lede {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: var(--text-lg);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 2000;
+  background: var(--accent);
+  color: #04121d;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1;
+  border: 1px solid transparent;
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: #04121d;
+}
+
+.btn--primary:hover {
+  background: #7dd3fc;
+}
+
+.btn--ghost {
+  border-color: var(--accent-border);
+  color: var(--accent-text);
+  background: var(--accent-dim);
+}
+
+.btn--ghost:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent);
+}
+
+.btn--quiet {
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.btn--quiet:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn--sm {
+  padding: 0.55rem 1rem;
+  font-size: var(--text-xs);
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   Chips + badges
+   ========================================================================== */
+
+.chip {
+  display: inline-block;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.badge--ml {
+  background: var(--track-ml-dim);
+  color: var(--track-ml);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.badge--data {
+  background: var(--track-data-dim);
+  color: var(--track-data);
+  border: 1px solid var(--accent-border);
+}
+
+.badge--product {
+  background: var(--track-product-dim);
+  color: var(--track-product);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.card--pad {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.card--interactive {
+  transition:
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.card--interactive::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: var(--card-accent, var(--accent));
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.card--interactive:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+}
+
+.card--interactive:hover::before {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Prose (rendered markdown on case study pages)
+   ========================================================================== */
+
+.prose {
+  color: var(--text-muted);
+  font-size: 1.03rem;
+  line-height: 1.8;
+}
+
+.prose > * + * {
+  margin-top: 1.15rem;
+}
+
+.prose h2 {
+  font-size: var(--text-xl);
+  color: var(--text);
+  margin-top: 2.5rem;
+  letter-spacing: -0.01em;
+}
+
+.prose h3 {
+  font-size: var(--text-lg);
+  color: var(--text);
+  margin-top: 1.75rem;
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.prose li {
+  margin-left: 0.25rem;
+}
+
+.prose img {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-block: 1.5rem;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: rgba(148, 163, 184, 0.12);
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  color: var(--accent-text);
+}
+
+/* ==========================================================================
+   Motion preferences
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .btn:hover,
+  .card--interactive:hover {
+    transform: none;
+  }
+}

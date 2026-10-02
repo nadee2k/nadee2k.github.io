@@ -1,0 +1,132 @@
+---
+import { site } from "../data/site";
+import SectionHead from "./SectionHead.astro";
+
+const channels = [
+  {
+    label: "Email",
+    value: site.email,
+    href: `mailto:${site.email}`,
+    note: "Preferred — fastest response",
+    primary: true,
+  },
+  {
+    label: "LinkedIn",
+    value: site.linkedinHandle,
+    href: site.linkedin,
+    note: "Professional profile",
+  },
+  {
+    label: "GitHub",
+    value: site.githubHandle,
+    href: site.github,
+    note: "Source for every project",
+  },
+  {
+    label: "Phone",
+    value: site.phoneDisplay,
+    href: `tel:${site.phone}`,
+    note: "Sri Lanka · GMT+5:30",
+  },
+];
+---
+
+<section class="section section--sunken" id="contact">
+  <div class="container">
+    <SectionHead
+      eyebrow="Contact"
+      title="Get in Touch"
+      lede="Open to Data & AI Engineering roles — internships, graduate schemes and entry-level positions."
+      center
+    />
+
+    <ul class="contact__grid">
+      {
+        channels.map((channel) => (
+          <li>
+            <a
+              class:list={["card", "card--pad", "contact__card", channel.primary && "contact__card--primary"]}
+              href={channel.href}
+              target={channel.primary ? undefined : "_blank"}
+              rel="noopener"
+            >
+              <span class="contact__label">{channel.label}</span>
+              <span class="contact__value">{channel.value}</span>
+              <span class="contact__note">{channel.note}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="contact__cta">
+      <a class="btn btn--primary" href={site.resume} download>
+        Download Résumé
+      </a>
+      <a class="btn btn--ghost" href={site.github} target="_blank" rel="noopener">
+        Browse the code
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    max-width: 900px;
+    margin-inline: auto;
+  }
+
+  .contact__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    height: 100%;
+    transition:
+      transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+
+  .contact__card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-border);
+    text-decoration: none;
+  }
+
+  .contact__card--primary {
+    border-color: var(--accent-border);
+    background: var(--accent-dim);
+  }
+
+  .contact__label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .contact__value {
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--accent-text);
+    word-break: break-word;
+  }
+
+  .contact__note {
+    font-size: var(--text-xs);
+    color: var(--text-subtle);
+  }
+
+  .contact__cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+</style>

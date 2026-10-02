@@ -1,0 +1,109 @@
+---
+import { site, quickFacts } from "../data/site";
+import SectionHead from "./SectionHead.astro";
+---
+
+<section class="section" id="about">
+  <div class="container">
+    <SectionHead eyebrow="About" title="About Me" />
+
+    <div class="about__grid">
+      <div class="about__prose">
+        <p>
+          I am a Data Science undergraduate at SLIIT, graduating June 2027, working
+          across both sides of the data lifecycle: building the machine learning models
+          that turn raw data into predictions, and building the pipelines and platforms
+          that make those models possible to run repeatedly.
+        </p>
+        <p>
+          My work is driven by a preference for things that actually hold up in
+          production. On the modelling side that means caring about class imbalance,
+          choosing evaluation metrics that reflect the business question, and treating
+          explainability as a requirement rather than a nice-to-have. On the engineering
+          side it means layered pipelines, validation that fails loudly, and APIs instead
+          of shared database connections.
+        </p>
+        <p>
+          Most of my projects start as a question about real data rather than an
+          assignment, and each one is written up with its reasoning and results
+          documented on this site.
+        </p>
+      </div>
+
+      <aside class="about__facts" aria-label="Quick facts">
+        <dl>
+          {
+            quickFacts.map((fact) => (
+              <div class="about__fact">
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))
+          }
+          <div class="about__fact">
+            <dt>Location</dt>
+            <dd>{site.location}</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(240px, 0.85fr);
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .about__prose {
+    color: var(--text-muted);
+    font-size: 1.03rem;
+    line-height: 1.8;
+    max-width: 62ch;
+  }
+
+  .about__prose p + p {
+    margin-top: 1.1rem;
+  }
+
+  .about__facts {
+    padding: clamp(1.15rem, 2.5vw, 1.5rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .about__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-block: 0.7rem;
+  }
+
+  .about__fact + .about__fact {
+    border-top: 1px solid var(--border);
+  }
+
+  .about__fact dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .about__fact dd {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  @media (max-width: 800px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,170 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Suppress the default indexable behaviour for error pages. */
+  noindex?: boolean;
+  /** JSON-LD graph nodes appended to the default Person node. */
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = site.description,
+  noindex = false,
+  schema = [],
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} | Data & AI Engineer`;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", site.url).href;
+const ogImage = new URL("/assets/og-cover.png", site.url).href;
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.url,
+  image: new URL("/assets/profile.png", site.url).href,
+  jobTitle: site.role,
+  email: `mailto:${site.email}`,
+  description: site.description,
+  sameAs: [site.github, site.linkedin],
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Sri Lanka Institute of Information Technology (SLIIT)",
+  },
+  knowsAbout: [
+    "Machine Learning",
+    "Data Engineering",
+    "ETL",
+    "Python",
+    "SQL",
+    "Explainable AI",
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta name="author" content={site.name} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#080c18" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    {
+      schema.map((node) => (
+        <script type="application/ld+json" set:html={JSON.stringify(node)} />
+      ))
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+
+    <script is:inline>
+      // Navbar elevation on scroll, driven by rAF instead of per-event style writes.
+      const nav = document.querySelector("[data-nav]");
+      if (nav) {
+        let ticking = false;
+        const sync = () => {
+          nav.toggleAttribute("data-scrolled", window.scrollY > 24);
+          ticking = false;
+        };
+        addEventListener(
+          "scroll",
+          () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(sync);
+          },
+          { passive: true },
+        );
+        sync();
+      }
+
+      // Mobile navigation drawer.
+      const toggle = document.querySelector("[data-nav-toggle]");
+      const links = document.querySelector("[data-nav-menu]");
+      if (toggle && links) {
+        const setOpen = (open) => {
+          links.toggleAttribute("data-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+          document.documentElement.toggleAttribute("data-nav-locked", open);
+        };
+        toggle.addEventListener("click", () =>
+          setOpen(!links.hasAttribute("data-open")),
+        );
+        links.addEventListener("click", (e) => {
+          if (e.target.closest("a")) setOpen(false);
+        });
+        addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && links.hasAttribute("data-open")) {
+            setOpen(false);
+            toggle.focus();
+          }
+        });
+      }
+
+      // Scrollspy: mark the section currently in view.
+      const spyTargets = document.querySelectorAll("section[id]");
+      const spyLinks = document.querySelectorAll("[data-nav-link]");
+      if (spyTargets.length && spyLinks.length && "IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const id = entry.target.id;
+              for (const link of spyLinks) {
+                link.toggleAttribute(
+                  "aria-current",
+                  link.getAttribute("href") === `#${id}`,
+                );
+              }
+            }
+          },
+          { rootMargin: "-45% 0px -50% 0px" },
+        );
+        spyTargets.forEach((el) => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>

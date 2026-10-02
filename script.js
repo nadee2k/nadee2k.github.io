@@ -1,13 +1,24 @@
 // script.js
 
-window.addEventListener("scroll", () => {
-  const navbar = document.querySelector(".navbar");
+const navbar = document.querySelector(".navbar");
+const scrolledClass = "navbar--scrolled";
 
-  if (window.scrollY > 50) {
-    navbar.style.background = "rgba(2, 6, 23, 0.98)";
-  } else {
-    navbar.style.background = "rgba(15, 23, 42, 0.95)";
-  }
-});
+let ticking = false;
 
-console.log("Portfolio Loaded Successfully");
+function syncNavbar() {
+  if (!navbar) return;
+  navbar.classList.toggle(scrolledClass, window.scrollY > 50);
+  ticking = false;
+}
+
+window.addEventListener(
+  "scroll",
+  () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(syncNavbar);
+  },
+  { passive: true }
+);
+
+syncNavbar();

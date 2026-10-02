@@ -47,6 +47,11 @@ body {
   z-index: 1000;
   padding: 20px 0;
   backdrop-filter: blur(10px);
+  transition: background 0.3s ease;
+}
+
+.navbar--scrolled {
+  background: rgba(2, 6, 23, 0.98);
 }
 
 .nav-content {
@@ -114,6 +119,23 @@ body {
   color: #cbd5e1;
   max-width: 600px;
   margin-bottom: 30px;
+}
+
+.core-skills-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 35px;
+}
+
+.core-skill-tag {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #bae6fd;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .hero-buttons {
@@ -309,20 +331,8 @@ body {
   padding: 28px 24px;
 }
 
-.project-architecture-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 220px;
-  border-radius: 14px;
-  margin: 12px 0 16px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(59, 130, 246, 0.1));
-  color: #bae6fd;
-  font-size: 1.05rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 24px;
+.alt-project-detail {
+  background: linear-gradient(180deg, #111827 0%, #0b1020 100%);
 }
 
 .project-section ul {

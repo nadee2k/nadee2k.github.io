@@ -33,10 +33,26 @@ export const quickFacts = [
  * study or the resume — do not add a number that cannot be substantiated.
  */
 export const headlineMetrics = [
-  { value: "75%+", label: "Churn precision" },
-  { value: "85%+", label: "Regression R²" },
-  { value: "~88%", label: "Emotion accuracy" },
-  { value: "30+", label: "Engineered features" },
+  {
+    value: "75%+",
+    label: "Churn model precision",
+    href: "/projects/customer-churn-prediction/",
+  },
+  {
+    value: "~88%",
+    label: "Speech emotion accuracy",
+    href: "/projects/speech-emotion-recognition/",
+  },
+  {
+    value: "4",
+    label: "Speech architectures compared",
+    href: "/projects/speech-emotion-recognition/",
+  },
+  {
+    value: "30+",
+    label: "Churn features engineered",
+    href: "/projects/customer-churn-prediction/",
+  },
 ] as const;
 
 export const skillGroups = [

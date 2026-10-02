@@ -18,6 +18,20 @@ const href = `/projects/${project.id.replace(/\.(md|mdx)$/, "")}/`;
   class="card card--interactive card--pad"
   style={`--card-accent:${track.color}`}
 >
+  {
+    !compact && data.architecture && (
+      <figure class="pc__architecture">
+        <img
+          src={data.architecture}
+          alt={`${data.title} system architecture`}
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>System architecture</figcaption>
+      </figure>
+    )
+  }
+
   <header class="pc__head">
     <span class={`badge ${track.badge}`}>{track.short}</span>
     {
@@ -87,6 +101,26 @@ const href = `/projects/${project.id.replace(/\.(md|mdx)$/, "")}/`;
 </article>
 
 <style>
+  .pc__architecture {
+    display: grid;
+    gap: 0.4rem;
+    margin: calc(clamp(1.25rem, 3vw, 1.75rem) * -1);
+    margin-bottom: 0;
+    padding: 0.75rem;
+    background: var(--bg-sunken);
+  }
+
+  .pc__architecture img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+  }
+
+  .pc__architecture figcaption {
+    font-size: var(--text-xs);
+    color: var(--text-subtle);
+  }
+
   .pc__head {
     display: flex;
     align-items: center;

@@ -20,8 +20,8 @@ const icons: Record<string, string> = {
       </p>
 
       <h1 class="hero__title">
-        I build machine learning systems
-        <span class="hero__accent">and the pipelines that feed them.</span>
+        Data &amp; AI Engineer building
+        <span class="hero__accent">data platforms and explainable ML.</span>
       </h1>
 
       <p class="hero__lede">{site.tagline}</p>
@@ -30,8 +30,14 @@ const icons: Record<string, string> = {
         {
           headlineMetrics.map((metric) => (
             <li class="hero__metric">
-              <span class="hero__metric-value">{metric.value}</span>
-              <span class="hero__metric-label">{metric.label}</span>
+              <a
+                class="hero__metric-link"
+                href={metric.href}
+                aria-label={`${metric.value} ${metric.label}; view case study`}
+              >
+                <span class="hero__metric-value">{metric.value}</span>
+                <span class="hero__metric-label">{metric.label}</span>
+              </a>
             </li>
           ))
         }
@@ -179,6 +185,22 @@ const icons: Record<string, string> = {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
+  }
+
+  .hero__metric-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hero__metric-link:hover {
+    text-decoration: none;
+  }
+
+  .hero__metric-link:hover .hero__metric-value {
+    color: var(--accent-text);
   }
 
   .hero__metric-value {

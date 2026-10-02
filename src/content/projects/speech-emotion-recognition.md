@@ -14,7 +14,7 @@ stack:
   - REST API
 metrics:
   - value: "~88%"
-    label: Accuracy
+    label: Held-out accuracy
   - value: "8"
     label: Emotion classes
   - value: "4"
@@ -52,6 +52,13 @@ feature pipeline and compared them on held-out data:
 - **LSTM** — models the temporal evolution of a spoken utterance.
 - **Transformer** — self-attention over the full sequence without recurrence.
 - **Hybrid** — convolutional feature extraction feeding recurrent or attention layers.
+
+## Reading the accuracy result
+
+The roughly 88% figure is held-out accuracy across eight emotion classes, not a guarantee
+of equal performance on every microphone or recording condition. The noise, pitch and
+time-stretch augmentations target that gap; real-world robustness should still be judged
+against recordings representative of the intended deployment environment.
 
 ## Robustness to recording conditions
 
